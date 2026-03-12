@@ -94,6 +94,13 @@ export interface Payment {
   payment_method_name?: string; // Nuevo: para mostrar el nombre
 }
 
+export interface PaymentMethod {
+  id: string;
+  name: string;
+  active: boolean;
+  created_at?: string;
+}
+
 export interface PatientProfile extends Patient {
   city_name?: string;
   appointments: AppointmentDetail[];
