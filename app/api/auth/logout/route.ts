@@ -1,0 +1,12 @@
+import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+
+export async function POST() {
+  const cookieStore = await cookies();
+  
+  // Eliminar cookies
+  cookieStore.delete('session');
+  cookieStore.delete('authUser');
+  
+  return NextResponse.json({ success: true });
+}
