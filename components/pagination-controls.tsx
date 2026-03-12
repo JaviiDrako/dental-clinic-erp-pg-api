@@ -26,7 +26,7 @@ export function PaginationControls({
   const getPageNumbers = () => {
     const delta = 2; // Números a mostrar antes y después de la página actual
     const range = [];
-    const rangeWithDots = [];
+    const rangeWithDots: (number | string)[] = [];
     let previousPage;
 
     // Siempre mostrar primera y última página, más las cercanas a la actual
