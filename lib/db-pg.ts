@@ -300,8 +300,13 @@ export async function getProcedureById(id: string): Promise<ProcedureDetail | nu
 }
 
 export async function getProcedureDetails(id: string): Promise<ProcedureDetail> {
-  const procedure = await queryOne<Procedure>(
-    `SELECT p.*, t.name as treatment_name, t.description as treatment_description
+  // Usar un tipo temporal que extiende Procedure
+  const procedure = await queryOne<any>(
+    `SELECT 
+      p.*,
+      t.name as treatment_name,
+      t.description as treatment_description,
+      t.base_price
      FROM procedures p
      LEFT JOIN treatments t ON p.treatment_id = t.id
      WHERE p.id = $1`,
@@ -326,13 +331,12 @@ export async function getProcedureDetails(id: string): Promise<ProcedureDetail> 
     [id]
   );
 
-  // Calcular total pagado (parseando correctamente los números)
+  // Calcular total pagado
   const totalPaid = payments.reduce((sum, p) => {
     const amount = typeof p.amount === 'string' ? parseFloat(p.amount) : p.amount;
     return sum + (isNaN(amount) ? 0 : amount);
   }, 0);
 
-  // Asegurar que total_cost es un número
   const totalCost = typeof procedure.total_cost === 'string' 
     ? parseFloat(procedure.total_cost) 
     : procedure.total_cost || 0;
@@ -343,9 +347,9 @@ export async function getProcedureDetails(id: string): Promise<ProcedureDetail> 
     ...procedure,
     treatment: procedure.treatment_id ? {
       id: procedure.treatment_id,
-      name: procedure.treatment_name,
+      name: procedure.treatment_name || '',
       description: procedure.treatment_description,
-      base_price: 0,
+      base_price: procedure.base_price || 0,
       active: true,
       created_at: new Date().toISOString(),
     } : undefined,
