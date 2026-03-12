@@ -1,4 +1,4 @@
-import { Pool, QueryResult } from 'pg';
+import { Pool, QueryResult, QueryResultRow } from 'pg';
 
 // This module can only be used on the server
 if (typeof window !== 'undefined') {
@@ -14,7 +14,7 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
-export async function query<T = any>(
+export async function query<T extends QueryResultRow = any>(
   text: string,
   params?: any[]
 ): Promise<QueryResult<T>> {
@@ -26,7 +26,7 @@ export async function query<T = any>(
   }
 }
 
-export async function queryOne<T = any>(
+export async function queryOne<T extends QueryResultRow = any>(
   text: string,
   params?: any[]
 ): Promise<T | null> {
@@ -34,7 +34,7 @@ export async function queryOne<T = any>(
   return result.rows[0] || null;
 }
 
-export async function queryAll<T = any>(
+export async function queryAll<T extends QueryResultRow = any>(
   text: string,
   params?: any[]
 ): Promise<T[]> {
