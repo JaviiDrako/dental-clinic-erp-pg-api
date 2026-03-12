@@ -33,6 +33,7 @@ export interface Patient {
   phone?: string;
   address?: string;
   city_id?: string;
+  city_name?: string;   
   birth_date?: string;
   medical_history?: string;
   created_at: string;
@@ -102,7 +103,6 @@ export interface PaymentMethod {
 }
 
 export interface PatientProfile extends Patient {
-  city_name?: string;
   appointments: AppointmentDetail[];
   procedures: ProcedureDetail[];
   totalPaid: number;
