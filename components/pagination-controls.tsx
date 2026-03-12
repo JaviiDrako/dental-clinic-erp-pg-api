@@ -27,7 +27,7 @@ export function PaginationControls({
     const delta = 2; // Números a mostrar antes y después de la página actual
     const range = [];
     const rangeWithDots: (number | string)[] = [];
-    let previousPage;
+    let previousPage: number | undefined;
 
     // Siempre mostrar primera y última página, más las cercanas a la actual
     for (let i = 1; i <= totalPages; i++) {
