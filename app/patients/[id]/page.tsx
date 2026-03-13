@@ -227,9 +227,34 @@ export default function PatientDetailPage() {
                   const paid = procedure.totalPaid || 0;
                   const pending = procedure.totalPending || 0;
                   
+                  // Función para obtener color y texto del estado
+                  const getStatusInfo = (status: string) => {
+                    switch (status) {
+                      case 'planned':
+                        return { text: 'Planificado', color: 'bg-yellow-100 text-yellow-800' };
+                      case 'in_progress':
+                        return { text: 'En Progreso', color: 'bg-blue-100 text-blue-800' };
+                      case 'completed':
+                        return { text: 'Completado', color: 'bg-green-100 text-green-800' };
+                      case 'cancelled':
+                        return { text: 'Cancelado', color: 'bg-red-100 text-red-800' };
+                      default:
+                        return { text: status, color: 'bg-gray-100 text-gray-800' };
+                    }
+                  };
+
+                  const statusInfo = getStatusInfo(procedure.status);
+                  
                   return (
-                    <Card key={procedure.id} className="p-4 hover:shadow-md transition-shadow">
-                      <div className="flex justify-between items-start mb-2">
+                    <Card key={procedure.id} className="p-4 hover:shadow-md transition-shadow relative">
+                      {/* Badge de estado - NUEVO */}
+                      <div className="absolute top-4 right-4">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusInfo.color}`}>
+                          {statusInfo.text}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between items-start mb-2 pr-24"> {/* pr-24 para no solaparse con el badge */}
                         <h3 className="font-semibold text-lg">{procedure.treatment?.name || 'Procedimiento'}</h3>
                         <Button
                           variant="ghost"
@@ -240,7 +265,7 @@ export default function PatientDetailPage() {
                         </Button>
                       </div>
                       
-                      <div className="space-y-2 text-sm">
+                      <div className="space-y-2 text-sm mt-2">
                         {procedure.tooth_code && (
                           <p><span className="text-muted-foreground">Pieza:</span> {procedure.tooth_code}</p>
                         )}

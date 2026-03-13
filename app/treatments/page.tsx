@@ -6,14 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Sidebar from '@/components/layout/sidebar';
 import type { Treatment } from '@/lib/types';
-import { Plus } from 'lucide-react';
+import { Plus, Pencil } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { EditTreatmentForm } from '@/components/forms/edit-treatment-form';
 
 export default function TreatmentsPage() {
   const [treatments, setTreatments] = useState<Treatment[]>([]);
   const [showInactive, setShowInactive] = useState(false);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
+  const [editingTreatment, setEditingTreatment] = useState<Treatment | null>(null);
   const { toast } = useToast();
 
   async function loadTreatments() {
@@ -104,8 +106,17 @@ export default function TreatmentsPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {displayed.map((treatment) => (
-                <Card key={treatment.id} className="p-6 hover:shadow-lg transition">
-                  <div className="flex justify-between items-start mb-2">
+                <Card key={treatment.id} className="p-6 hover:shadow-lg transition relative">
+                  {/* Botón de edición - NUEVO */}
+                  <button
+                    onClick={() => setEditingTreatment(treatment)}
+                    className="absolute top-4 right-4 p-2 hover:bg-muted rounded-full transition"
+                    title="Editar tratamiento"
+                  >
+                    <Pencil className="w-4 h-4 text-muted-foreground hover:text-primary" />
+                  </button>
+
+                  <div className="flex justify-between items-start mb-2 pr-8"> {/* pr-8 para espacio del botón */}
                     <h3 className="font-semibold text-lg">{treatment.name}</h3>
                     <span className={`text-xs px-2 py-1 rounded ${
                       treatment.active 
@@ -131,6 +142,16 @@ export default function TreatmentsPage() {
                 </Card>
               ))}
             </div>
+          )}
+
+          {/* Modal de edición */}
+          {editingTreatment && (
+            <EditTreatmentForm
+              treatment={editingTreatment}
+              open={!!editingTreatment}
+              onClose={() => setEditingTreatment(null)}
+              onSuccess={loadTreatments}
+            />
           )}
         </div>
       </div>
